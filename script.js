@@ -6,6 +6,10 @@
 const btn = document.querySelector(".btn-country");
 const countriesContainer = document.querySelector(".countries");
 
+const renderError = (message) => {
+  countriesContainer.insertAdjacentText("beforeend", message);
+};
+
 // get country data
 const getCountryData = (...countries) => {
   // validation
@@ -16,21 +20,18 @@ const getCountryData = (...countries) => {
   const searchByCountryCodes = REST_API_URL + "alpha?codes=";
   // ISO ISO 3166-1 Alpha-3 country codes
   const countryCodes = countries.join(",");
-  // receiving the data
-  let data;
+  // receive data and update the DOM
   fetch(searchByCountryCodes + countryCodes)
-    .then((response) =>
-      response.json().then((responseData) => (data = responseData))
-    )
-    .catch((e) => console.log(e))
-    .finally(() => {
-      // update the DOM
-      updateCountriesContainerHTML(data);
-    });
+    .then((response) => response.json())
+    .then((responseData) => updateCountriesContainerHTML(responseData))
+    .catch((err) => {
+      console.error(`${err} 💥💥💥`);
+      renderError(`Something went wrong 💥💥💥 "${err.message}". Try again!`);
+    })
+    .finally(() => (countriesContainer.style.opacity = 1));
 };
 
 const updateCountriesContainerHTML = (countries) => {
-  console.log("countries", countries);
   const countryCards = [];
   for (const country of countries) {
     countryCards.push(`
@@ -57,9 +58,9 @@ const updateCountriesContainerHTML = (countries) => {
   `);
   }
   countriesContainer.insertAdjacentHTML("beforeend", countryCards.join(""));
-  countriesContainer.style.opacity = 1;
 };
 
 // supply list of country codes
-// getCountryData("IND", "ECU", "CAN", "PRT");
-getCountryData("CHN", "PAK");
+getCountryData("IND", "ECU", "CAN", "PRT", "CHN", "PAK");
+
+// btn.addEventListener("click", () => getCountryData("IND", "ECU", "CAN", "PRT"));
