@@ -22,5 +22,35 @@ request.send();
 // receiving the data
 request.addEventListener("load", function () {
   const data = JSON.parse(this.responseText);
-  console.dir(data);
+  updateCountriesContainerHTML(data);
 });
+
+const updateCountriesContainerHTML = (countries) => {
+  const countryCards = [];
+  for (const country of countries) {
+    countryCards.push(`
+    <article class="country">
+            <img class="country__img" src="${country.flags.svg}" />
+            <div class="country__data">
+              <h3 class="country__name">${
+                country.name instanceof String
+                  ? country.name
+                  : country.name.common
+              }</h3>
+              <h4 class="country__region">${country.region}</h4>
+              <p class="country__row"><span>👫</span>${(
+                +country.population / 1000000
+              ).toFixed(1)} million</p>
+              <p class="country__row"><span>🗣️</span>${
+                country.languages[0]?.name
+              }</p>
+              <p class="country__row"><span>💰</span>${
+                country.currencies[0]?.name
+              }</p>
+            </div>
+          </article>
+    `);
+  }
+  countriesContainer.insertAdjacentHTML("beforeend", countryCards.join(""));
+  countriesContainer.style.opacity = 1;
+};
