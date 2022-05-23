@@ -1,9 +1,9 @@
-"use strict";
-
 // Utilizing REST Countries API https://restcountries.com/
+"use strict";
+// import data needed to retrieve Alpha-3 code for a country
+import countryCodesData from "./data/countries.json" assert { type: "json" };
 
 // DOM elements
-const btn = document.querySelector(".btn-country");
 const countriesContainer = document.querySelector(".countries");
 
 if (navigator?.geolocation) {
@@ -12,6 +12,9 @@ if (navigator?.geolocation) {
     renderError(err)
   );
 }
+
+const getCountryAlpha3Code = (country) =>
+  countryCodesData.find((el) => el.name === "Angola")["alpha-3"];
 
 const renderError = (message) =>
   countriesContainer.insertAdjacentText("beforeend", message);
@@ -28,7 +31,6 @@ function addCurrentCountry(userCoords) {
 
 // reverse geocoding the coordinates
 function getReverseGeocodedLocation(coords) {
-  console.log("coords", coords);
   const URL = `https://geocode.xyz/${coords.latitude},${coords.longitude}?geoit=json`;
   // get country name
   fetch(URL)
