@@ -14,10 +14,67 @@ body {
   color: #555;
   background-color: #f7f7f7;
   min-height: 100vh;
-
   display: flex;
   align-items: center;
   justify-content: center;
+}
+
+header {
+  text-align: center;
+  margin: 3rem 0rem 3rem 0rem;
+  color: #968c8c;
+  font-family: "Macondo", cursive;
+}
+
+h1.title {
+  font-size: 5rem;
+  text-shadow: 0rem 0.1rem 0.1rem #615656;
+}
+
+h3.sub__title {
+  font-size: 2rem;
+}
+
+.input__country__section {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin: 0rem 0rem 3rem 0rem;
+}
+
+input#countryNames {
+  font-size: 2rem;
+  padding: 0.5rem 0.75rem;
+  font-family: "Raleway", sans-serif;
+  width: 25rem;
+  border-radius: 0.5rem;
+}
+
+.btn__add__country,
+.btn__delete__all {
+  font-size: 2rem;
+  padding: 0.5rem 1rem;
+  width: 4rem;
+  border-radius: 0.5rem;
+}
+
+.btn__add__country {
+  margin: 0 0.5rem;
+  background-color: rgba(97, 165, 255, 0.6);
+}
+
+.btn__add__country:hover {
+  background-color: rgba(97, 165, 255, 1);
+  cursor: pointer;
+}
+
+.btn__delete__all {
+  background-color: rgba(255, 95, 95, 0.6);
+}
+
+.btn__delete__all:hover {
+  background-color: rgba(255, 95, 95, 1);
+  cursor: pointer;
 }
 
 .container {
@@ -27,9 +84,7 @@ body {
 }
 
 .countries {
-  /* margin-bottom: 8rem; */
   display: flex;
-
   font-size: 2rem;
   opacity: 0;
   transition: opacity 1s;
@@ -51,7 +106,6 @@ body {
   width: 100%;
   position: absolute;
   top: -4rem;
-
   text-align: center;
   font-size: 1.8rem;
   font-weight: 600;
