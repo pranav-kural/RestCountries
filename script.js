@@ -4,7 +4,7 @@
 import countryCodesData from "./data/countries.json" assert { type: "json" };
 
 // global variables
-const countriesAlreadyInView = [];
+let countriesAlreadyInView = [];
 
 // DOM elements
 const countriesContainer = document.querySelector(".countries");
@@ -15,61 +15,59 @@ const deleteAllCountryButton = document.querySelector(".btn__delete__all");
 const addCountriesToDOM = (...countries) => {
   // validation
   if (!countries) return alert("Invalid country codes provided!");
+  // rest countries api v3.1 url
+  const REST_API_URL = "https://restcountries.com/v3.1/";
+  // url to search by country codes
+  const searchByCountryCodes = REST_API_URL + "alpha?codes=";
+  // ISO ISO 3166-1 Alpha-3 country codes
+  const countryCodes = countries.join(",");
+  // receive data and update the DOM
+  fetch(searchByCountryCodes + countryCodes)
+    .then((response) => {
+      if (!response.ok)
+        throw new Error(`Country not found (${response.status})`);
 
-  // get country data
-  const fetchCountryData = (countries) => {
-    // rest countries api v3.1 url
-    const REST_API_URL = "https://restcountries.com/v3.1/";
-    // url to search by country codes
-    const searchByCountryCodes = REST_API_URL + "alpha?codes=";
-    // ISO ISO 3166-1 Alpha-3 country codes
-    const countryCodes = countries.join(",");
-    // receive data and update the DOM
-    fetch(searchByCountryCodes + countryCodes)
-      .then((response) => {
-        if (!response.ok)
-          throw new Error(`Country not found (${response.status})`);
-
-        return response.json();
-      })
-      .then((responseData) => updateCountriesContainerHTML(responseData))
-      .catch((err) => {
-        console.error(`${err} 💥💥💥`);
-        renderError(`Something went wrong 💥💥💥 "${err.message}". Try again!`);
-      })
-      .finally(() => (countriesContainer.style.opacity = 1));
-  };
+      return response.json();
+    })
+    .then((responseData) => updateCountriesContainerHTML(responseData))
+    .catch((err) => {
+      console.error(`${err} 💥💥💥`);
+      renderError(`Something went wrong 💥💥💥 "${err.message}". Try again!`);
+    })
+    .finally(() => (countriesContainer.style.opacity = 1));
 
   const updateCountriesContainerHTML = (countries) => {
     const countryCards = [];
     for (const country of countries) {
       countryCards.push(`
-      <article class="country">
-            <img class="country__img" src="${country?.flags.svg}" />
-            <div class="country__data">
-              <h3 class="country__name">${
-                country?.name instanceof String
-                  ? country?.name
-                  : country?.name?.common
-              }</h3>
-              <h4 class="country__region">${country?.region}</h4>
-              <p class="country__row"><span>👫</span>${(
-                +country?.population / 1000000
-              ).toFixed(1)} million</p>
-              <p class="country__row"><span>🗣️</span>${Object.values(
-                country.languages
-              ).join(", ")}</p>
-              <p class="country__row"><span>💰</span>${
-                Object.values(country?.currencies)[0]?.name
-              }</p>
-            </div>
-          </article>
-    `);
+        <article class="country">
+              <img class="country__img" src="${country?.flags.svg}" />
+              <div class="country__data">
+                <h3 class="country__name">${
+                  country?.name instanceof String
+                    ? country?.name
+                    : country?.name?.common
+                }</h3>
+                <h4 class="country__region">${country?.region}</h4>
+                <p class="country__row"><span>👫</span>${(
+                  +country?.population / 1000000
+                ).toFixed(1)} million</p>
+                <p class="country__row"><span>🗣️</span>${
+                  country?.languages
+                    ? Object.values(country?.languages)?.join(", ")
+                    : ""
+                }</p>
+                <p class="country__row"><span>💰</span>${
+                  country?.currencies
+                    ? Object.values(country?.currencies)[0]?.name
+                    : ""
+                }</p>
+              </div>
+            </article>
+      `);
     }
     countriesContainer.insertAdjacentHTML("beforeend", countryCards.join(""));
   };
-
-  fetchCountryData(countries);
 };
 
 const renderError = (message) =>
@@ -100,7 +98,6 @@ const addCountryToDOM = () => {
   const userInput = addCountryInput.value?.trim();
   // search for a matching country
   const countryAlpha3Codes = getCountryAlpha3Code(userInput);
-  console.log("countryAlpha3Codes", countryAlpha3Codes);
   // if country not found
   if (countryAlpha3Codes.length === 0)
     return alert(`Country "${userInput}" not found!`);
@@ -117,7 +114,6 @@ const addCountryToDOM = () => {
   filteredCountryCodes.forEach((countryCode) =>
     countriesAlreadyInView.push(countryCode)
   );
-  console.log("filteredCountryCodes", filteredCountryCodes);
 };
 
 addCountryInput.addEventListener("keydown", (e) => {
@@ -133,7 +129,8 @@ addCountryButton.addEventListener("click", () => {
 });
 
 deleteAllCountryButton.addEventListener("click", () => {
-  countriesContainer.remove();
+  countriesContainer.replaceChildren();
+  countriesAlreadyInView = [];
 });
 
 // supply list of country codes
