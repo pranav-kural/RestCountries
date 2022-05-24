@@ -42,7 +42,7 @@ h3.sub__title {
   margin: 0rem 0rem 3rem 0rem;
 }
 
-input#countryNames {
+input#input__add__country {
   font-size: 2rem;
   padding: 0.5rem 0.75rem;
   font-family: "Raleway", sans-serif;
